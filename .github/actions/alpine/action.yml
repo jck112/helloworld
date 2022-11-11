@@ -2,4 +2,4 @@ name: 'alpine'
 runs:
   using: "docker"
   image: "docker://alpine:latest"
-  entrypoint: "main.sh"
+  entrypoint: "/github/workspace/.github/actions/alpine/main.sh"

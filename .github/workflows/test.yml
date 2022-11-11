@@ -1,0 +1,16 @@
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  buildrepo:
+    runs-on: ubuntu-latest
+    container:
+      image: alpine:latest
+      options: --pull always
+
+    steps:
+      - run: |
+          echo "whoami: $(whoami)"
+          echo "HOME: $HOME"
+          echo "/etc/passwd: \n$(cat /etc/passwd)"

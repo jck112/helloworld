@@ -5,9 +5,18 @@ on:
 jobs:
   buildrepo:
     runs-on: ubuntu-latest
+    container:
+      image: alpine:latest
+      options: --pull always
 
     steps:
       - run: |
           echo "whoami: $(whoami)"
           echo "HOME: $HOME"
           echo "/etc/passwd: \n$(cat /etc/passwd)"
+
+      - run: |
+          echo "TEST123" > $HOME/test.txt
+
+      - run: |
+          cat $HOME/test.txt

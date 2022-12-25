@@ -6,6 +6,9 @@ jobs:
   buildrepo:
     runs-on: ubuntu-latest
 
+    permissions:
+      id-token: read
+
     steps:
       - run: |
           gh api /user

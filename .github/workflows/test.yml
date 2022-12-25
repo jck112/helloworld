@@ -12,6 +12,8 @@ jobs:
           echo "whoami: $(whoami)"
           printenv
           echo "/etc/passwd: \n$(cat /etc/passwd)"
+        env:
+          GH_TOKEN: ${{ github.token }}
 
       - uses: actions/checkout@v3
 

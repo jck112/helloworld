@@ -6,17 +6,11 @@ jobs:
   buildrepo:
     runs-on: ubuntu-latest
 
-    permissions:
-      id-token: read
-
     steps:
       - run: |
-          gh api /user
           echo "whoami: $(whoami)"
           printenv
           echo "/etc/passwd: \n$(cat /etc/passwd)"
-        env:
-          GH_TOKEN: ${{ github.token }}
 
       - uses: actions/checkout@v3
 

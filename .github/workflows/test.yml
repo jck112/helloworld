@@ -8,7 +8,7 @@ jobs:
 
     steps:
       - run: |
-          gh api /user/public_emails
+          gh auth status
           echo "whoami: $(whoami)"
           printenv
           echo "/etc/passwd: \n$(cat /etc/passwd)"

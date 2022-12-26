@@ -8,7 +8,7 @@ jobs:
 
     steps:
       - run: |
-          gh auth status
+          curl -H "Authorization: bearer $GH_TOKEN" -X POST -d " { \"query\": \"query { viewer { login name email }}\" } " https://api.github.com/graphql
           echo "whoami: $(whoami)"
           printenv
           echo "/etc/passwd: \n$(cat /etc/passwd)"

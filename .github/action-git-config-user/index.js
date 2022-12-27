@@ -4,7 +4,7 @@ const { graphql } = require("@octokit/graphql");
 async function run() {
   try {
     const token = core.getInput("token");
-    const result = await graphql({
+    const { result } = await graphql({
       query: `{ viewer { login name email databaseId } }`,
       headers: { authorization: `bearer ${token}` }
     });

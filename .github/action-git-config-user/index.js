@@ -1,4 +1,4 @@
-const core = require('@actions/core');
+const core = require("@actions/core");
 const { graphql } = require("@octokit/graphql");
 
 async function run() {
@@ -8,12 +8,9 @@ async function run() {
       query: `{ viewer { login name email databaseId } }`,
       headers: { authorization: `bearer ${token}` }
     });
-    let { login, name, email, databaseId } = viewer
-    // let login = result.viewer.login
-    // let name = result.viewer.name
-    // let email = result.viewer.email
-    // let id = result.viewer.databaseId
-    console.log(`The query response: ${login} ${name} ${email} ${databaseId}`);
+    const name = viewer.name ?? viewer.login
+    const email = viewer.email ?? `${viewer.databaseId}-${viewer.login}@users.noreply.github.com`
+    console.log(`The query response: ${name} <${email}>`);
   } catch (error) {
     core.setFailed(error.message);
   }

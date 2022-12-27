@@ -1,0 +1,10 @@
+name: 'Git config user'
+description: 'Git config user'
+inputs:
+  token:
+    description: >
+      Personal access token (PAT) used to configure git.
+    default: ${{ github.token }}
+runs:
+  using: 'node16'
+  main: 'index.js'

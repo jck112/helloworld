@@ -7,14 +7,5 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: |
-          curl -H "Authorization: bearer $GH_TOKEN" -X POST -d " { \"query\": \"query { viewer { login name email databaseId }}\" } " https://api.github.com/graphql
-          echo "whoami: $(whoami)"
-          printenv
-          echo "/etc/passwd: \n$(cat /etc/passwd)"
-        env:
-          GH_TOKEN: ${{ github.token }}
-
       - uses: actions/checkout@v3
-
-      - uses: ./.github/actions/alpine
+      - uses: ./.github/action-git-config-user

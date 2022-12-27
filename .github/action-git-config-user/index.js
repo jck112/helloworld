@@ -5,7 +5,7 @@ async function run() {
   try {
     const token = core.getInput("token");
     const { response } = await graphql(
-      `{ viewer { login name email databaseId } }`,
+      `query { viewer { login name email databaseId } }`,
       { headers: { authorization: `bearer ${token}` } }
     );
     console.log(`The query response: ${response}`);

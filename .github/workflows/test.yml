@@ -9,3 +9,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/action-git-config-user
+      - run: |
+          git config user.name
+          git config user.email

@@ -1,4 +1,5 @@
 const core = require("@actions/core");
+const exec = require('@actions/exec');
 const { graphql } = require("@octokit/graphql");
 
 async function run() {
@@ -14,7 +15,9 @@ async function run() {
     name ||= login;
     email ||= `${databaseId}+${login}@users.noreply.github.com`;
 
-    console.log(`${name} <${email}>`)
+    // Set name and email using "git config".
+    await exec.exec(`git config --global user.name '${name}'`);
+    await exec.exec(`git config --global user.email '${email}'`);
   } catch (error) {
     core.setFailed(error.message);
   }

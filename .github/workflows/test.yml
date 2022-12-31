@@ -7,8 +7,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/action-git-config-user
+      - uses: tidylabs/action-git-config-user@main
       - run: |
           git config user.name
           git config user.email

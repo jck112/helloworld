@@ -11,6 +11,7 @@ jobs:
       - run: |
           sudo apt-get install build-essential procps curl file git
           NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          echo "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
           brew info
         env:

@@ -11,8 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CASKS: >
-        jck112/helloworld/balenaetcher
-        jck112/helloworld/ffmpeg
+        jck112/cask/balenaetcher
+        jck112/cask/ffmpeg
       HOMEBREW_DEVELOPER: "1"
       HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
     steps:
@@ -30,7 +30,7 @@ jobs:
           echo "HOMEBREW_REPOSITORY=$HOMEBREW_REPOSITORY" >> $GITHUB_ENV
       - name: Setup tap
         run: |
-          HOMEBREW_TAP_REPOSITORY=$(brew --repo $GITHUB_REPOSITORY)
+          HOMEBREW_TAP_REPOSITORY=$(brew --repo "jck112/homebrew-cask")
           mkdir -vp "${HOMEBREW_TAP_REPOSITORY%/*}"
           ln -vs "$GITHUB_WORKSPACE" "$HOMEBREW_TAP_REPOSITORY"
       - name: Patch 'brew bump'

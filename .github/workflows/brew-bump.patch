@@ -1,0 +1,104 @@
+diff --git a/Library/Homebrew/dev-cmd/bump-cask-pr.rb b/Library/Homebrew/dev-cmd/bump-cask-pr.rb
+index 0cd05870e..08781e157 100644
+--- a/Library/Homebrew/dev-cmd/bump-cask-pr.rb
++++ b/Library/Homebrew/dev-cmd/bump-cask-pr.rb
+@@ -38,6 +38,8 @@ module Homebrew
+              description: "Print the pull request URL instead of opening in a browser."
+       switch "--no-fork",
+              description: "Don't try to fork the repository."
++      switch "--automerge",
++             description: "Automatically merge the newly created pull request."
+       flag   "--version=",
+              description: "Specify the new <version> for the cask."
+       flag   "--message=",
+diff --git a/Library/Homebrew/dev-cmd/bump-formula-pr.rb b/Library/Homebrew/dev-cmd/bump-formula-pr.rb
+index e9f87bc45..864fc5308 100644
+--- a/Library/Homebrew/dev-cmd/bump-formula-pr.rb
++++ b/Library/Homebrew/dev-cmd/bump-formula-pr.rb
+@@ -50,6 +50,8 @@ module Homebrew
+              description: "Print the pull request URL instead of opening in a browser."
+       switch "--no-fork",
+              description: "Don't try to fork the repository."
++      switch "--automerge",
++             description: "Automatically merge the newly created pull request."
+       comma_array "--mirror",
+                   description: "Use the specified <URL> as a mirror URL. If <URL> is a comma-separated list " \
+                                "of URLs, multiple mirrors will be added."
+diff --git a/Library/Homebrew/dev-cmd/bump.rb b/Library/Homebrew/dev-cmd/bump.rb
+index 0bc0bbc96..8bd81c353 100644
+--- a/Library/Homebrew/dev-cmd/bump.rb
++++ b/Library/Homebrew/dev-cmd/bump.rb
+@@ -27,6 +27,10 @@ module Homebrew
+              description: "Check only casks."
+       switch "--open-pr",
+              description: "Open a pull request for the new version if there are none already open."
++      switch "--no-fork",
++             description: "Don't try to fork the repository."
++      switch "--automerge",
++             description: "Automatically merge the newly created pull request."
+       flag   "--limit=",
+              description: "Limit number of package results returned."
+       flag   "--start-with=",
+@@ -106,11 +110,7 @@ module Homebrew
+           Repology::HOMEBREW_CASK
+         end
+ 
+-        package_data = if formula_or_cask.is_a?(Formula) && formula_or_cask.versioned_formula?
+-          nil
+-        else
+-          Repology.single_package_query(name, repository: repository)
+-        end
++        package_data = nil
+ 
+         retrieve_and_display_info_and_open_pr(
+           formula_or_cask,
+@@ -281,7 +281,12 @@ module Homebrew
+     return unless new_version
+     return if pull_requests
+ 
+-    system HOMEBREW_BREW_FILE, "bump-#{type}-pr", "--no-browse",
+-           "--message=Created by `brew bump`", "--version=#{new_version}", name
++    bump_args = ["bump-#{type}-pr"]
++    bump_args << "--no-browse"
++    bump_args << "--no-fork" if args.no_fork?
++    bump_args << "--automerge" if args.automerge?
++    bump_args << "--message=Created by `brew bump`"
++    bump_args << "--version=#{new_version}"
++    system HOMEBREW_BREW_FILE, *bump_args, name
+   end
+ end
+diff --git a/Library/Homebrew/utils/github.rb b/Library/Homebrew/utils/github.rb
+index 0d7472784..b3ebf7518 100644
+--- a/Library/Homebrew/utils/github.rb
++++ b/Library/Homebrew/utils/github.rb
+@@ -98,9 +98,10 @@ module GitHub
+     API.open_rest(url)
+   end
+ 
+-  def merge_pull_request(repo, number:, sha:, merge_method:, commit_message: nil)
++  def merge_pull_request(repo, number:, sha: nil, merge_method: "squash", commit_message: nil)
+     url = "#{API_URL}/repos/#{repo}/pulls/#{number}/merge"
+-    data = { sha: sha, merge_method: merge_method }
++    data = { merge_method: merge_method }
++    data[:sha] = sha if sha
+     data[:commit_message] = commit_message if commit_message
+     API.open_rest(url, data: data, request_method: :PUT, scopes: CREATE_ISSUE_FORK_OR_PR_SCOPES)
+   end
+@@ -627,8 +628,15 @@ module GitHub
+         end
+ 
+         begin
+-          url = create_pull_request(tap_remote_repo, commit_message,
+-                                    "#{username}:#{branch}", remote_branch, pr_message)["html_url"]
++          pr_data = create_pull_request(tap_remote_repo, commit_message,
++                                        "#{username}:#{branch}", remote_branch, pr_message)
++          url = pr_data["html_url"]
++          number = pr_data["number"]
++
++          if args.automerge?
++            merge_pull_request(tap_remote_repo, number: number, commit_message: "")
++          end
++
+           if args.no_browse?
+             puts url
+           else

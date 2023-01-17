@@ -10,7 +10,7 @@ jobs:
       - run: |
           echo "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-          brew doctor
+          brew --config
         env:
           HOMEBREW_FORCE_HOMEBREW_ON_LINUX: 1
 

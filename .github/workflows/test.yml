@@ -33,11 +33,11 @@ jobs:
           ln -vs "$GITHUB_WORKSPACE" "$HOMEBREW_TAP_REPOSITORY"
       - name: Patch 'brew bump'
         run: |
+          brew update && brew upgrade
           git -C "$HOMEBREW_REPOSITORY" apply \
           "$GITHUB_WORKSPACE/.github/workflows/brew-bump.patch"
       - name: Bump casks
         run: |
-          brew upgrade
           brew bump --cask --open-pr --no-fork --automerge "jck112/cask/balenaetcher"
 
 

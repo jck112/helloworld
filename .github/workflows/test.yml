@@ -37,6 +37,7 @@ jobs:
           "$GITHUB_WORKSPACE/.github/workflows/brew-bump.patch"
       - name: Bump casks
         run: |
+          brew upgrade
           brew bump --cask --open-pr --no-fork --automerge "jck112/cask/balenaetcher"
 
 

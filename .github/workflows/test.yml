@@ -28,7 +28,7 @@ jobs:
           echo "HOMEBREW_REPOSITORY=$HOMEBREW_REPOSITORY" >> $GITHUB_ENV
       - name: Setup tap
         run: |
-          HOMEBREW_TAP_REPOSITORY=$(brew --repo "jck112/homebrew-cask")
+          HOMEBREW_TAP_REPOSITORY=$(brew --repo "jck112/cask")
           mkdir -vp "${HOMEBREW_TAP_REPOSITORY%/*}"
           ln -vs "$GITHUB_WORKSPACE" "$HOMEBREW_TAP_REPOSITORY"
       - name: Patch 'brew bump'
@@ -36,6 +36,8 @@ jobs:
           git -C "$HOMEBREW_REPOSITORY" apply \
           "$GITHUB_WORKSPACE/.github/workflows/brew-bump.patch"
       - name: Bump casks
-        run: brew bump --open-pr --no-fork --automerge "jck112/cask/balenaetcher"
+        run: |
+          brew tap-info --json jck112/cask
+          brew bump --open-pr --no-fork --automerge "jck112/cask/balenaetcher"
 
 

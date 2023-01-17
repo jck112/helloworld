@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       HOMEBREW_DEVELOPER: 1
-      HOMEBREW_FORCE_HOMEBREW_ON_LINUX: 1
       HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v3
@@ -33,11 +32,10 @@ jobs:
           ln -vs "$GITHUB_WORKSPACE" "$HOMEBREW_TAP_REPOSITORY"
       - name: Patch 'brew bump'
         run: |
+          git config --global url."https://api:${HOMEBREW_GITHUB_API_TOKEN}@github.com/".insteadOf "https://github.com/"
           brew update && brew upgrade
           git -C "$HOMEBREW_REPOSITORY" apply \
           "$GITHUB_WORKSPACE/.github/workflows/brew-bump.patch"
       - name: Bump casks
         run: |
           brew bump --cask --open-pr --no-fork --automerge "jck112/cask/balenaetcher"
-
-

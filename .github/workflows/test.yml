@@ -5,6 +5,8 @@ on:
 jobs:
   helloworld:
     runs-on: ubuntu-latest
+    container:
+      image: debian:latest
 
     steps:
       - uses: tidylabs/action-git-config-user@main

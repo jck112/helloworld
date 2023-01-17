@@ -5,14 +5,9 @@ on:
 jobs:
   helloworld:
     runs-on: ubuntu-latest
-    container:
-      image: debian:latest
-
     steps:
-      - run: apt-get update && apt-get install -y build-essential procps curl file git
       - uses: tidylabs/action-git-config-user@main
       - run: |
-          NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
           echo "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
           brew doctor

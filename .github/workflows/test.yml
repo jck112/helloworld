@@ -15,20 +15,22 @@ jobs:
         run: |
           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
+          brew update && brew upgrade
+
+          brew install-bundler-gems
+
           echo "$HOMEBREW_PREFIX/sbin" >> $GITHUB_PATH
           echo "$HOMEBREW_PREFIX/bin" >> $GITHUB_PATH
 
           echo "HOMEBREW_PREFIX=$HOMEBREW_PREFIX" >> $GITHUB_ENV
           echo "HOMEBREW_CELLAR=$HOMEBREW_CELLAR" >> $GITHUB_ENV
           echo "HOMEBREW_REPOSITORY=$HOMEBREW_REPOSITORY" >> $GITHUB_ENV
-      - name: Setup tap
-        run: |
+
           HOMEBREW_TAP_REPOSITORY=$(brew --repo $GITHUB_REPOSITORY)
           mkdir -vp "${HOMEBREW_TAP_REPOSITORY%/*}"
           ln -vs "$GITHUB_WORKSPACE" "$HOMEBREW_TAP_REPOSITORY"
       - name: Patch 'brew bump'
         run: |
-          brew update && brew upgrade
           git -C "$HOMEBREW_REPOSITORY" apply \
           "$GITHUB_WORKSPACE/.github/workflows/brew-bump.patch"
       - name: Bump casks

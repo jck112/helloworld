@@ -33,6 +33,7 @@ jobs:
         run: |
           git -C "$HOMEBREW_REPOSITORY" apply \
           "$GITHUB_WORKSPACE/.github/workflows/brew-bump.patch"
+      - name: Run 'brew livecheck'
+        run: brew livecheck --json --tap $GITHUB_REPOSITORY
       - name: Bump casks
-        run: |
-          brew bump --open-pr --no-fork --automerge "jck112/helloworld/balenaetcher"
+        run: brew bump --open-pr --no-fork --automerge "jck112/helloworld/balenaetcher"

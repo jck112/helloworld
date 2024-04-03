@@ -7,14 +7,14 @@ jobs:
   job1:
     runs-on: ubuntu-latest
     outputs:
-      output1: ${{ steps.step1.outputs.test }}
+      alpine_version_minor: ${{ steps.step1.outputs.alpine_version_minor }}
     steps:
       - id: step1
-        run: echo "3.19.1" >> "$GITHUB_OUTPUT"
+        run: echo "alpine_version_minor=3.19.1" >> "$GITHUB_OUTPUT"
   job2:
     runs-on: ubuntu-latest
     needs: job1
     container:
-      image: alpine:${{ needs.job1.outputs.output1 }}
+      image: alpine:${{ needs.job1.outputs.alpine_version_minor }}
     steps:
       - run: echo "$(cat /etc/alpine-release)"
